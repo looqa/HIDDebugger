@@ -1,0 +1,153 @@
+﻿<Window x:Class="HIDDebugger.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:HIDDebugger.Views"
+        mc:Ignorable="d"
+        Title="HID Debugger 1.0" Height="700" Width="820" ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="8*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Label Content="Connection" Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource TopLabels}" />
+            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Vertical" Margin="5,5,5,5">
+                <DockPanel Style="{StaticResource ConnectionDockPanels}">
+                    <TextBlock Text="VID" VerticalAlignment="Center" />
+                    <TextBox x:Name="VendorIdField" Text="{Binding Path=Vid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="80"
+                             IsReadOnly="{Binding Device.IsDisconnected}" />
+                </DockPanel>
+                <DockPanel Style="{StaticResource ConnectionDockPanels}">
+                    <TextBlock Text="PID" VerticalAlignment="Center" />
+                    <TextBox x:Name="ProductIdField" Text="{Binding Path=Pid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsReadOnly="{Binding Device.IsDisconnected}" Width="80" />
+                </DockPanel>
+                <DockPanel Style="{StaticResource ConnectionDockPanels}">
+                    <Button x:Name="ConnectButton" Content="Connect" IsEnabled="{Binding Path=CanConnect}"
+                            Command="{Binding ConnectCommand}" />
+                    <Button x:Name="DisconnectButton" Content="Disconnect" IsEnabled="{Binding Path=CanDisconnect}"
+                            Command="{Binding DisconnectCommand}" />
+                    <TextBlock Text="Connected: " VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Device.IsConnected}" VerticalAlignment="Center" />
+                </DockPanel>
+            </StackPanel>
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+
+                <Button Content="Save config" Command="{Binding SaveConfigCommand}" />
+                <Button Content="Load config" Grid.Column="1" Command="{Binding LoadConfigCommand}" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="8*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Label Content="Send Reports" Grid.Row="0" Style="{StaticResource TopLabels}" />
+            <ListView x:Name="SendReportListView" SelectedIndex="{Binding SendReportSelectedIndex}"
+                      ItemsSource="{Binding ReportsCollection}" Grid.Row="1"
+                      HorizontalContentAlignment="Stretch">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="100" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="Rep. ID" Width="100" DisplayMemberBinding="{Binding ReportId}" />
+                        <GridViewColumn Header="Length" Width="80" DisplayMemberBinding="{Binding Length}" />
+                        <GridViewColumn Header="Pending" Width="80" DisplayMemberBinding="{Binding Pending}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Grid Grid.Row="2">
+                <Button Content="Add report" Grid.Column="0" Command="{Binding AddReportCommand}"
+                        IsEnabled="{Binding Device.IsConnected}" />
+                <Button Content="Edit report" Grid.Column="1" IsEnabled="{Binding SendGroupButtonActive}"
+                        CommandParameter="{Binding ElementName=SendReportListView, Path=SelectedItem}"
+                        Command="{Binding EditReportCommand}" />
+                <Button Content="Delete report" Grid.Column="2" IsEnabled="{Binding SendGroupButtonActive}"
+                        Command="{Binding DeleteReportCommand}"
+                        CommandParameter="{Binding ElementName=SendReportListView, Path=SelectedItem}" />
+                <Button x:Name="SendOnceButton" Grid.Column="3" Content="Send" Command="{Binding SendOneReportCommand}"
+                        CommandParameter="{Binding ElementName=SendReportListView, Path=SelectedItem}"
+                        IsEnabled="{Binding SendGroupButtonActive}" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+            </Grid>
+
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="9*" />
+            </Grid.RowDefinitions>
+            <Label Content="Sent Reports" Grid.Row="0" Style="{StaticResource TopLabels}" />
+            <ListView x:Name="SentReportsListView" ItemsSource="{Binding SentReportsCollection}" Grid.Row="1">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Time" Width="60" DisplayMemberBinding="{Binding ActionTime}" />
+                        <GridViewColumn Header="Name" Width="80" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="Rep. ID" Width="80" DisplayMemberBinding="{Binding ReportId}" />
+                        <GridViewColumn Header="Length" Width="70" DisplayMemberBinding="{Binding Length}" />
+                        <GridViewColumn Header="Success" Width="70" DisplayMemberBinding="{Binding Success}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="8*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Label Content="Received Reports" Grid.Row="0" Style="{StaticResource TopLabels}" />
+            <ListView x:Name="ReceivedReportsCollectionListView" ItemsSource="{Binding ReceivedReportsCollection}"
+                      Grid.Row="1" HorizontalContentAlignment="Stretch"
+                      SelectedIndex="{Binding DataLookupSelectedIndex}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Time" Width="100" DisplayMemberBinding="{Binding ActionTime}" />
+                        <GridViewColumn Header="Rep. ID" Width="Auto" DisplayMemberBinding="{Binding ReportId}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Grid Grid.Row="2">
+                <Button Content="Start receiving" Grid.Column="0" IsEnabled="{Binding CanStartReceiveReports}"
+                        Command="{Binding StartReceivingReportsCommand}" />
+                <Button Content="Stop receiving" Grid.Column="1" IsEnabled="{Binding CanStopReceiveReports}"
+                        Command="{Binding StopReceivingReportsCommand}" />
+                <Button Content="Data lookup" Grid.Column="2" Command="{Binding DataLookupCommand}"
+                        CommandParameter="{Binding ElementName=ReceivedReportsCollectionListView, Path=SelectedItem}"
+                        IsEnabled="{Binding CanLookupData}" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>

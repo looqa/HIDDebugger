@@ -1,0 +1,70 @@
+﻿<Window x:Class="HIDDebugger.Views.AddReportView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:HIDDebugger.Views"
+        mc:Ignorable="d"
+        Title="Add/Edit Report" Height="600" Width="500" ResizeMode="NoResize">
+    <Grid>
+              <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1.9*"/>
+            <RowDefinition Height="1.1*"/>
+            <RowDefinition Height="6*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="0.5*"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="Add/Edit Report" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource TopLabels}"/>
+        <StackPanel Grid.Row="1" >
+        <DockPanel Margin="0,0,0,5">
+            <Label Content="Name"></Label>
+            <TextBox Text="{Binding Path=CurrentReport.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="150"/>
+        </DockPanel >
+        <DockPanel Margin="0,0,0,5">
+            <Label Content="Report ID (decimal)"></Label>
+                <TextBox Text="{Binding CurrentReport.ReportId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" HorizontalAlignment="Right"/>
+        </DockPanel>
+        <DockPanel Margin="0,0,0,5">
+            <Label Content="Length (Without Rep. ID)"/>
+                <TextBox Text="{Binding CurrentReport.Length, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" HorizontalAlignment="Right"/>
+        </DockPanel>
+        </StackPanel>
+        <Grid Grid.Row="2" Grid.ColumnSpan="2" >
+            <StackPanel Grid.Column="0">
+                <TextBlock x:Name="NewByteTextBoxLabel" Text="Byte in decimal" FontSize="13"/>
+                <TextBox Text="{Binding Path=NewByteValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" />
+            </StackPanel>
+            <Button Content="Add Byte" Grid.Column="1" IsEnabled="{Binding CanAddNewByte}" Command="{Binding AddByteButtonCommand}"/>
+            <Button Content="Remove Byte" Grid.Column="2" IsEnabled="{Binding CanRemoveByte}" Command="{Binding RemoveByteButtonCommand}" CommandParameter="{Binding ElementName=BytesListView, Path=SelectedItem}"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+        </Grid>
+        <ListView AlternationCount="{Binding CurrentReport.BytesCollection.Count}" x:Name="BytesListView" Grid.Row="3" Grid.ColumnSpan="2" SelectionMode="Single" SelectedItem="{Binding CurrentSelectedItem, Mode=OneWayToSource, UpdateSourceTrigger=Default}" ItemsSource="{Binding CurrentReport.BytesCollection}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="#" Width="52"
+                                    DisplayMemberBinding="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ListViewItem}}"/>
+                    <GridViewColumn Header="Bin" Width="130" DisplayMemberBinding="{Binding BinValue}"/>
+                    <GridViewColumn Header="Dec" Width="130">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox HorizontalAlignment="Center" Grid.Row="0" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Hex" Width="130" DisplayMemberBinding="{Binding HexValue}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <DockPanel  Grid.Row="4" VerticalAlignment="Center" Grid.ColumnSpan="2" >
+            <Button Content="Apply" Width="100" Command="{Binding ApplyButtonCommand}" IsEnabled="{Binding IsCompleted}"/>
+        </DockPanel> 
+    </Grid>
+</Window>

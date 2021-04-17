@@ -1,0 +1,43 @@
+﻿<Window x:Class="HIDDebugger.Views.DataLookupView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:HIDDebugger.Views"
+        mc:Ignorable="d"
+        Title="Data Lookup" Height="600" Width="500" ResizeMode="NoResize">
+    <Grid>
+        <Label Content="Report details" Grid.Row="0" Style="{StaticResource TopLabels}" />
+        <StackPanel Grid.Row="1">
+            <DockPanel>
+                <TextBlock Text="Time: " />
+                <TextBlock Text="{Binding CurrentReport.ActionTime}" />
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="Report ID: " />
+                <TextBlock Text="{Binding CurrentReport.ReportId}" />
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="Length: " />
+                <TextBlock Text="{Binding CurrentReport.Length}" />
+            </DockPanel>
+        </StackPanel>
+        <ListView ItemsSource="{Binding CurrentReport.BytesCollection}"
+                  AlternationCount="{Binding CurrentReport.BytesCollection.Count}" Grid.Row="2">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="#" Width="52"
+                                    DisplayMemberBinding="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ListViewItem}}" />
+                    <GridViewColumn Header="Bin" Width="130" DisplayMemberBinding="{Binding BinValue}" />
+                    <GridViewColumn Header="Dec" Width="130" DisplayMemberBinding="{Binding Value}" />
+                    <GridViewColumn Header="Hex" Width="130" DisplayMemberBinding="{Binding HexValue}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.08*" />
+            <RowDefinition Height="0.12*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+    </Grid>
+</Window>
