@@ -128,6 +128,7 @@ namespace HIDDebugger.ViewModels
             set
             {
                 _reportsCollection = value;
+                
                 OnPropertyChanged(nameof(ReportsCollection));
             }
         }
