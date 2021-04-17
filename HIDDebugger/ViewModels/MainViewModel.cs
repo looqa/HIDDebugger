@@ -200,6 +200,7 @@ namespace HIDDebugger.ViewModels
                 OnPropertyChanged(nameof(CanDisconnect));
                 OnPropertyChanged(nameof(CanStartReceiveReports));
                 OnPropertyChanged(nameof(CanStopReceiveReports));
+                OnPropertyChanged(nameof(SendGroupButtonActive));
             });
         }
 
@@ -211,6 +212,7 @@ namespace HIDDebugger.ViewModels
             OnPropertyChanged(nameof(CanConnect));
             OnPropertyChanged(nameof(CanDisconnect));
             OnPropertyChanged(nameof(CanStartReceiveReports));
+            OnPropertyChanged(nameof(SendGroupButtonActive));
         }
 
         private void AddReport()
